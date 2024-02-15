@@ -25,23 +25,30 @@ instance (Show a) => Show (List a) where
 
 -- | myHead. Función que regresa tal vez la cabeza de la lista.
 myHead :: List a -> Maybe a
-myHead = error "D:"
+myHead Void = Nothing -- Si la lista es vacia, la cabeza no te da nada.
+myHead (Cons a l) = Just a -- Si la lista no es vacia, la cabeza sera el primer elemento en la lista.
+
 -- | myTail. Función que regresa tal vez la cola de la lista.
 myTail :: List a -> Maybe (List a)
-myTail = error "D:"
+myTail Void = Nothing --Si la listav es vacia, no tiene cola.
+myTail (Cons a l)= Just l --Si la lista no es vacia, la cola sera el ultimo elemento.
 
 -- | myLast. Función que regresa tal vez el último elemento de la
 -- lista.
 myLast :: List a -> Maybe a
-myLast = error "D:"
+myLast Void = Nothing --Si la lista es vacia, no tiene ultimo elemento.
+myLast (Cons a Void)= Just a --Si la lista no es vacia, el ultimo elemento seera la cabeza
+myLast (Cons a l) = (myLast l) --Llamado recursivo para encontrar el ultimo elemento.
 
 -- | myLen. Función que regresa la longitud de la lista.
 myLen :: List a -> Int
-myLen = error "D:"
+myLen Void = 0 --Cuando la lista es vacia, la longitud es 0.
+myLen(Cons a l) = 1 + (myLen l) --La longitud de la lista sera 1 mas la longitud inicial.
 
 -- | isElem. Función que nos dice si un elemento está en una lista.
 isElem :: (Eq a) => List a -> a -> Bool
-isElem = error "D:"
+isElem Void f = False
+isElem (Cons a l) f | f == a = True | otherwise = (isElem l f) --Si el elemento esta en la lista, regresa true, si no, llamado recursivo.
 
 -- | myReverse. Función que regresa la reversa de una lista.
 myReverse :: List a -> List a
