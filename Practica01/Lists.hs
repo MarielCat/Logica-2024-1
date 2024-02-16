@@ -52,17 +52,20 @@ isElem (Cons a l) f | f == a = True | otherwise = (isElem l f) --Si el elemento 
 
 -- | myReverse. Función que regresa la reversa de una lista.
 myReverse :: List a -> List a
-myReverse = error "D:"
-
+myReverse Void = Void --Si la lista es vacia, no puede tener reversa y es vacia.
+myReverse (Cons a Void) = (Cons a Void) --Si la lista solo tiene un elemento, la reversa sera el mismo elemento.
 -- | toHaskell. Función que pasa una de nuestras listas a las listas
 -- de haskell.
 toHaskell :: List a -> [a]
-toHaskell = error "D:"
+toHaskell Void = [] --Si la lista es vacia, la lista de haskell no tendrá ningun elemento.
+toHaskell (Cons a f) = a : (toHaskell f) --Si la lista no es vacia, la lista de haskell sera el primer elemento de la lista mas el resto de la lista.
 
 -- | fromHaskell. Función que pasa una lista de haskell a nuestras
 -- listas.
 fromHaskell :: [a] -> List a
-fromHaskell = error "D:"
+fromHaskell [] = Void --Cuando recibe una list vacia, nos regresa otra lista vacia.
+fromHaskell (i:f) = Cons i (fromHaskell f) -- Si la lista tiene al menos un elemento, creamos un nodo con ese elemento y llamamos recursivamente a fromHaskell con el resto de la lista
+
 
 --------------------------------------------------------------------------------
 --------                           AUXILIARES                           --------
