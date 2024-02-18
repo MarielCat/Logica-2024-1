@@ -6,9 +6,10 @@
 - Laboratorio: Emiliano Galeana Araujo
 - Laboratorio: José Ricardo Desales Santos
 - Practica 1: Recordando Haskell. Árboles
-- Integrantes:
--
--
+- Arias Villaroel Alejandra Valentina
+- Del Monte Ortega Maryam Michelle
+- Martínez Mejía Eduardo
+- Monroi Romero Sahara Mariel
 -}
 
 module Lists where
@@ -16,8 +17,9 @@ module Lists where
 data List a = Void | Cons a (List a) -- deriving (Show)
 
 instance (Show a) => Show (List a) where
+  show :: Show a => List a -> String
   show Void       = "[]"
-  show (Cons a l) = "(" ++ (show a) ++ ":" ++ (show l) ++ ")"
+  show (Cons a l) = "(" ++ show a ++ ":" ++ show l ++ ")"
 
 --------------------------------------------------------------------------------
 --------                            FUNCIONES                           --------
@@ -26,46 +28,53 @@ instance (Show a) => Show (List a) where
 -- | myHead. Función que regresa tal vez la cabeza de la lista.
 myHead :: List a -> Maybe a
 myHead Void = Nothing -- Si la lista es vacia, la cabeza no te da nada.
-myHead (Cons a l) = Just a -- Si la lista no es vacia, la cabeza sera el primer elemento en la lista.
+myHead (Cons x _) = Just x -- Si la lista no es vacia, la cabeza sera el primer elemento en la lista.
 
 -- | myTail. Función que regresa tal vez la cola de la lista.
 myTail :: List a -> Maybe (List a)
-myTail Void = Nothing --Si la listav es vacia, no tiene cola.
-myTail (Cons a l)= Just l --Si la lista no es vacia, la cola sera el ultimo elemento.
+myTail Void = Nothing --Si la lista es vacia, no tiene cola.
+myTail (Cons _ x) = Just x --Si la lista no es vacia, la cola sera el ultimo elemento.
 
 -- | myLast. Función que regresa tal vez el último elemento de la
 -- lista.
 myLast :: List a -> Maybe a
 myLast Void = Nothing --Si la lista es vacia, no tiene ultimo elemento.
-myLast (Cons a Void)= Just a --Si la lista no es vacia, el ultimo elemento seera la cabeza
-myLast (Cons a l) = (myLast l) --Llamado recursivo para encontrar el ultimo elemento.
+myLast (Cons x Void) = Just x --Si la lista no es vacia, el ultimo elemento seera la cabeza
+myLast (Cons x xs) = myLast xs --Llamado recursivo para encontrar el ultimo elemento.
+
 
 -- | myLen. Función que regresa la longitud de la lista.
 myLen :: List a -> Int
 myLen Void = 0 --Cuando la lista es vacia, la longitud es 0.
-myLen(Cons a l) = 1 + (myLen l) --La longitud de la lista sera 1 mas la longitud inicial.
+myLen (Cons x xs) = myLen xs + 1 --La longitud de la lista sera 1 mas la longitud inicial.
 
 -- | isElem. Función que nos dice si un elemento está en una lista.
 isElem :: (Eq a) => List a -> a -> Bool
-isElem Void f = False
-isElem (Cons a l) f | f == a = True | otherwise = (isElem l f) --Si el elemento esta en la lista, regresa true, si no, llamado recursivo.
+isElem Void a = False --Si la lista es vacia, el elemento no existe y regresa False
+isElem (Cons x xs) a = (x == a) || isElem xs a --Si el elemento esta en la lista, regresa true, si no, llamado recursivo.
 
 -- | myReverse. Función que regresa la reversa de una lista.
 myReverse :: List a -> List a
-myReverse Void = Void --Si la lista es vacia, no puede tener reversa y es vacia.
-myReverse (Cons a Void) = (Cons a Void) --Si la lista solo tiene un elemento, la reversa sera el mismo elemento.
+myReverse Void = Void -- Si la lista es vacia, nos regresa una lista vacia
+myReverse (Cons x xs) = myReverseHelper (Cons x xs) Void --Cualquier lista es ingresada a una funcion externa myHelper con una lista vacia como cola
+  where
+    -- | myReverseHelper Funcion que recibe dos listas, una lista que se ira invirtiendo, y una cola con los elementos ya invertidos, con lo que recursivamente nos dara toda la lista inversa.
+    myReverseHelper :: List a -> List a -> List a
+    myReverseHelper Void tail = tail -- Si la lo restante de la lista a invertir es vacio, regresamos la cola que ya es toda la lista invertida. 
+    myReverseHelper (Cons y ys) tail =  myReverseHelper ys (Cons y tail) --Se va inviertiendo recursivamente toda lista excepto lo que ya se ha invertido guardado en una cola y se concatenan
+
 -- | toHaskell. Función que pasa una de nuestras listas a las listas
 -- de haskell.
 toHaskell :: List a -> [a]
 toHaskell Void = [] --Si la lista es vacia, la lista de haskell no tendrá ningun elemento.
-toHaskell (Cons a f) = a : (toHaskell f) --Si la lista no es vacia, la lista de haskell sera el primer elemento de la lista mas el resto de la lista.
+toHaskell (Cons x xs) = x : toHaskell xs --Si la lista no es vacia, la lista de haskell sera el primer elemento de la lista mas el resto de la lista.
+
 
 -- | fromHaskell. Función que pasa una lista de haskell a nuestras
 -- listas.
 fromHaskell :: [a] -> List a
 fromHaskell [] = Void --Cuando recibe una list vacia, nos regresa otra lista vacia.
-fromHaskell (i:f) = Cons i (fromHaskell f) -- Si la lista tiene al menos un elemento, creamos un nodo con ese elemento y llamamos recursivamente a fromHaskell con el resto de la lista
-
+fromHaskell (x:xs) = Cons x (fromHaskell xs) -- Si la lista tiene al menos un elemento, creamos un nodo con ese elemento y llamamos recursivamente a fromHaskell con el resto de la lista
 
 --------------------------------------------------------------------------------
 --------                           AUXILIARES                           --------
